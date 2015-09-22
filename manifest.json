@@ -29,13 +29,6 @@
       },
       "description": "Go to next song",
       "global": true
-    },
-    "favorite": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+7"
-      },
-      "description": "Favorite currently playing song",
-      "global": true
     }
   },
 
@@ -49,7 +42,7 @@
   ],
 
   "background": {
-    "scripts": ["bundle.js"],
+    "scripts": ["events.js"],
     "persistent": false
   }
 }
