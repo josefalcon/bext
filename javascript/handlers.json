@@ -1,0 +1,17 @@
+{
+  "spotify": {
+    "toggle": "(function(){document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#play-pause')[0].click()})()",
+    "pause": "(function(){var e=document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#play-pause')[0];if(e.classList.contains('playing')){e.click()}})()",
+    "next": "(function(){document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#next')[0].click()})()",
+    "previous": "(function(){document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#previous')[0].click()})()",
+    "favorite": "",
+    "i18nKey": "spotify",
+    "urlToMatch": "spotify.com"
+  },
+  "bandcamp": {
+    "toggle": "(function(){document.querySelector('#bcweekly .play-btn').click()})()",
+    "pause": "(function(){var bcw=document.getElementById('bcweekly');if(bcw.classList.contains('playing')){document.querySelector('#bcweekly .play-btn').click()}})()",
+    "i18nKey": "bandcamp",
+    "urlToMatch": "bandcamp.com"
+  }
+}
