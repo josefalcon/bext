@@ -42,7 +42,7 @@
   ],
 
   "background": {
-    "scripts": ["events.js"],
+    "scripts": ["src/events.js"],
     "persistent": false
   }
 }

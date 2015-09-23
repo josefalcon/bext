@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "js": "browserify javascript/app.js -t babelify --outfile app.js && browserify javascript/events.js -t babelify --outfile events.js",
-    "clean": "rm app.js events.js"
+    "js": "browserify javascript/app.js -t babelify --outfile src/app.js && browserify javascript/events.js -t babelify --outfile src/events.js",
+    "clean": "rm src/app.js src/events.js"
   },
   "author": "",
   "license": "ISC",
