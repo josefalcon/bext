@@ -29,16 +29,25 @@ function match(url) {
 }
 
 function updateTab(tab) {
-  let key = match(tab.url);
-  if (key) {
+  let handler = match(tab.url);
+  if (handler) {
     get()
       .then(state => {
         if (!state.tabs) {
           state.tabs = {};
         }
 
-        tab.handler = key;
-        state.tabs[tab.id] = tab;
+        // start tracking the tab. and add a title observer.
+        if (!state.tabs.hasOwnProperty(tab.id)) {
+          chrome.tabs.executeScript(tab.id, {file: 'src/title-observer.js'});
+        }
+
+        state.tabs[tab.id] = {
+          id: tab.id,
+          uri: tab.uri,
+          title: tab.title,
+          handler: handler
+        }
         return save(state);
       });
   } else {
