@@ -13,5 +13,13 @@
     "pause": "(function(){var bcw=document.getElementById('bcweekly');if(bcw.classList.contains('playing')){document.querySelector('#bcweekly .play-btn').click()}})()",
     "i18nKey": "bandcamp",
     "urlToMatch": "bandcamp.com"
+  },
+  "youtube": {
+    "toggle": "(function(){document.querySelector('.ytp-play-button').click()})()",
+    "pause": "(function(){document.querySelector('.ytp-play-button').click()})()",
+    "next": "(function(){document.querySelector('.ytp-next-button').click()})()",
+    "previous": "(function(){document.querySelector('.ytp-prev-button').click()})()",
+    "i18nKey": "youtube",
+    "urlToMatch": "youtube.com/watch"
   }
 }
