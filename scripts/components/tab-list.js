@@ -1,6 +1,4 @@
-import React, { Component, PropTypes } from 'react';
-import { SET_ACTIVE_TAB } from '../actions';
-import { dispatch } from '../store';
+import React, { Component } from 'react';
 
 class TabItem extends Component {
   render() {
@@ -9,7 +7,7 @@ class TabItem extends Component {
       : null;
 
     return (
-      <li key={this.props.id} onClick={this.props.setActiveTab}>
+      <li onClick={this.props.setActiveTab}>
         {selected} {this.props.title}
       </li>
     );
@@ -17,26 +15,16 @@ class TabItem extends Component {
 }
 
 export default class TabList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {activeTab: props.activeTab};
-  }
-
-  setActiveTab(tabId) {
-    dispatch({type: SET_ACTIVE_TAB, tabId: tabId});
-    this.setState({activeTab: tabId});
-  }
-
   render() {
     let tabs = Object.keys(this.props.tabs);
     return (
       <div className="tab-list">
         <ul>
-          { tabs.map(t => <TabItem id={t}
+          { tabs.map(t => <TabItem
+                            key={t}
                             title={this.props.tabs[t].title}
-                            active={this.state.activeTab === t}
-                            setActiveTab={e => this.setActiveTab(t)}
-                          />) }
+                            active={this.props.activeTab === t}
+                            setActiveTab={e => this.props.setActiveTab(t)} />) }
         </ul>
       </div>
     );

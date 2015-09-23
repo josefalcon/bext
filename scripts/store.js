@@ -1,7 +1,8 @@
 import { UPDATE_TAB, REMOVE_TAB, TOGGLE_TRACK, PREV_TRACK, NEXT_TRACK, SET_ACTIVE_TAB } from './actions';
-var handlers = require('./handlers.json');
+const handlers = require('./handlers.json');
 
-export function get() {
+
+export function getState() {
   return new Promise((resolve, reject) => {
     chrome.storage.local.get('state', items => {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
@@ -10,11 +11,23 @@ export function get() {
   });
 }
 
-function save(state) {
+export function subscribe(listener) {
+  // we can't use a traditional EventEmitter in this case.
+  // there is no persisted runtime environment. 
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message && message.updateState) listener(message.updateState);
+  });
+}
+
+function saveState(state) {
   return new Promise((resolve, reject) => {
     chrome.storage.local.set({state: state}, () => {
-      if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-      else resolve();
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        chrome.runtime.sendMessage({'updateState': state});
+        resolve();
+      }
     });
   });
 }
@@ -31,7 +44,7 @@ function match(url) {
 function updateTab(tab) {
   let handler = match(tab.url);
   if (handler) {
-    get()
+    getState()
       .then(state => {
         if (!state.tabs) {
           state.tabs = {};
@@ -48,7 +61,7 @@ function updateTab(tab) {
           title: tab.title,
           handler: handler
         }
-        return save(state);
+        return saveState(state);
       });
   } else {
     // remove it since it doesn't match.
@@ -58,7 +71,7 @@ function updateTab(tab) {
 }
 
 function removeTab(tabId) {
-  get()
+  getState()
     .then(state => {
       if (state.tabs[tabId]) {
         delete state.tabs[tabId];
@@ -66,21 +79,21 @@ function removeTab(tabId) {
         if (state.activeTab === tabId) {
           state.activeTab = null;
         }
-        return save(state);
+        return saveState(state);
       }
     });
 }
 
 function setActiveTab(tabId) {
-  get()
+  getState()
     .then(state => {
       state.activeTab = tabId;
-      return save(state);
+      return saveState(state);
     });
 }
 
 function dispatchInTab(action) {
-  get()
+  getState()
     .then(state => {
       if (!state.activeTab) return;
 

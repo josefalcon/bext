@@ -14,6 +14,5 @@ chrome.tabs.onRemoved.addListener(tabId => {
 })
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log(message, sender);
   if (message && message.title) dispatch({type: UPDATE_TAB, tab: sender.tab});
 });
