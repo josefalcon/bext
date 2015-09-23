@@ -2,8 +2,8 @@ import { UPDATE_TAB, REMOVE_TAB, TOGGLE_TRACK, PREV_TRACK, NEXT_TRACK, SET_ACTIV
 var handlers = require('./handlers.json');
 
 export function get() {
-  return new Promise(function (resolve, reject) {
-    chrome.storage.local.get('state', function(items) {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get('state', items => {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
       else resolve(items.state || {});
     });
@@ -11,8 +11,8 @@ export function get() {
 }
 
 function save(state) {
-  return new Promise(function (resolve, reject) {
-    chrome.storage.local.set({state: state}, function() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.set({state: state}, () => {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
       else resolve();
     });
@@ -32,7 +32,7 @@ function updateTab(tab) {
   let key = match(tab.url);
   if (key) {
     get()
-      .then(function(state) {
+      .then(state => {
         if (!state.tabs) {
           state.tabs = {};
         }
@@ -50,7 +50,7 @@ function updateTab(tab) {
 
 function removeTab(tabId) {
   get()
-    .then(function(state) {
+    .then(state => {
       if (state.tabs[tabId]) {
         delete state.tabs[tabId];
 
@@ -63,9 +63,8 @@ function removeTab(tabId) {
 }
 
 function setActiveTab(tabId) {
-  console.log('setActiveTab', tabId);
   get()
-    .then(function(state) {
+    .then(state => {
       state.activeTab = tabId;
       return save(state);
     });
@@ -73,7 +72,7 @@ function setActiveTab(tabId) {
 
 function dispatchInTab(action) {
   get()
-    .then(function(state) {
+    .then(state => {
       if (!state.activeTab) return;
 
       let activeTab = state.tabs[state.activeTab];
@@ -81,10 +80,6 @@ function dispatchInTab(action) {
 
       if (handler) {
         let code = handler[action.type];
-        console.log('activeTab', activeTab.id)
-        console.log('handler', activeTab.handler);
-        console.log('action', action.type);
-        console.log('code', handler[action.type]);
         if (code) chrome.tabs.executeScript(activeTab.id, {code: code});
       }
     });

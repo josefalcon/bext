@@ -1,14 +1,14 @@
 import { UPDATE_TAB, REMOVE_TAB } from './actions';
 import { dispatch } from './store';
 
-chrome.commands.onCommand.addListener(function(command) {
+chrome.commands.onCommand.addListener(command => {
   dispatch({type: command});
 });
 
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.url) dispatch({type: UPDATE_TAB, tab: tab});
 });
 
-chrome.tabs.onRemoved.addListener(function(tabId) {
+chrome.tabs.onRemoved.addListener(tabId => {
   dispatch({type: REMOVE_TAB, tabId: tabId});
 })
