@@ -4,14 +4,11 @@
     "pause": "(function(){var e=document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#play-pause')[0];if(e.classList.contains('playing')){e.click()}})()",
     "next": "(function(){document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#next')[0].click()})()",
     "previous": "(function(){document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#previous')[0].click()})()",
-    "favorite": "",
-    "i18nKey": "spotify",
     "urlToMatch": "spotify.com"
   },
   "bandcamp": {
     "toggle": "(function(){document.querySelector('#bcweekly .play-btn').click()})()",
     "pause": "(function(){var bcw=document.getElementById('bcweekly');if(bcw.classList.contains('playing')){document.querySelector('#bcweekly .play-btn').click()}})()",
-    "i18nKey": "bandcamp",
     "urlToMatch": "bandcamp.com"
   },
   "youtube": {
@@ -19,7 +16,6 @@
     "pause": "(function(){document.querySelector('.ytp-play-button').click()})()",
     "next": "(function(){document.querySelector('.ytp-next-button').click()})()",
     "previous": "(function(){document.querySelector('.ytp-prev-button').click()})()",
-    "i18nKey": "youtube",
     "urlToMatch": "youtube.com/watch"
   }
 }
