@@ -12,3 +12,7 @@ let observer = new window.MutationObserver(mutations => {
 
 let target = document.querySelector('head > title');
 observer.observe(target, { subtree: true, characterData: true, childList: true });
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  sendResponse('alive');
+});

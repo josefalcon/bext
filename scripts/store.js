@@ -1,21 +1,39 @@
 import { UPDATE_TAB, REMOVE_TAB, TOGGLE_TRACK, PREV_TRACK, NEXT_TRACK, SET_ACTIVE_TAB } from './actions';
 const handlers = require('./handlers.json');
 
+const initialState = {
+  activeTab: false,
+  tabs: {}
+}
 
 export function getState() {
   return new Promise((resolve, reject) => {
     chrome.storage.local.get('state', items => {
       if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-      else resolve(items.state || {});
+      else resolve(items.state || initialState);
     });
   });
 }
 
 export function subscribe(listener) {
   // we can't use a traditional EventEmitter in this case.
-  // there is no persisted runtime environment. 
+  // there is no persisted runtime environment.
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message && message.updateState) listener(message.updateState);
+  });
+}
+
+export function initializeTabs() {
+  chrome.tabs.query({}, tabs => {
+    let matchedTabs = tabs.map(matchTab).filter(x => x);
+    getState()
+      .then(state => {
+        matchedTabs.forEach(tab => {
+          trackTabTitle(tab.id);
+          state.tabs[tab.id] = tab
+        });
+        saveState(state);
+      })
   });
 }
 
@@ -32,35 +50,35 @@ function saveState(state) {
   });
 }
 
-function match(url) {
+function matchTab(tab) {
   for (var key of Object.keys(handlers)) {
-    if (url.indexOf(handlers[key].urlToMatch) > -1) {
-      return key;
+    if (tab.url.indexOf(handlers[key].urlToMatch) > -1) {
+      return {
+        id: tab.id,
+        url: tab.url,
+        title: tab.title,
+        handler: key
+      };
     }
   }
   return false;
 }
 
+function trackTabTitle(tabId) {
+  chrome.tabs.sendMessage(tabId, {}, response => {
+    if (response !== 'alive') {
+      chrome.tabs.executeScript(tabId, {file: 'src/title-observer.js'});
+    }
+  });
+}
+
 function updateTab(tab) {
-  let handler = match(tab.url);
-  if (handler) {
+  let tabInfo = matchTab(tab);
+  if (tabInfo) {
     getState()
       .then(state => {
-        if (!state.tabs) {
-          state.tabs = {};
-        }
-
-        // start tracking the tab. and add a title observer.
-        if (!state.tabs.hasOwnProperty(tab.id)) {
-          chrome.tabs.executeScript(tab.id, {file: 'src/title-observer.js'});
-        }
-
-        state.tabs[tab.id] = {
-          id: tab.id,
-          uri: tab.uri,
-          title: tab.title,
-          handler: handler
-        }
+        trackTabTitle(tab.id);
+        state.tabs[tab.id] = tabInfo
         return saveState(state);
       });
   } else {
