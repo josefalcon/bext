@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <style>
       * {
         box-sizing: border-box;
+      }
+
+      html {
+        font-size: 62.5%
       }
 
       body {
@@ -13,17 +18,18 @@
       }
 
       .container {
-        width: 14rem;
+        width: 22.4rem;
+        font-size: 1.3rem;
       }
 
       .tab-list ul {
         margin: 0;
-        padding: .5rem;
+        padding: 1rem;
       }
 
       .tab-list li {
         list-style: none;
-        padding: .25rem;
+        padding: .35rem;
         border-left: 1px solid #fff;
         border-right: 1px solid #fff;
         white-space: nowrap;
@@ -39,10 +45,34 @@
       .tab-list li:hover {
         border-left: 1px solid #333;
       }
+
+      .controller {
+        padding: .7rem;
+        font-size: 1.5rem;
+        border-top: 1px solid #eee;
+      }
+
+      .controller ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        text-align: center;
+      }
+
+      .controller li {
+        display: inline-block;
+        padding: 0 1rem;
+      }
     </style>
   </head>
   <body>
     <div class="container"></div>
+    <div class="controller">
+      <ul>
+        <li><i class="fa fa-step-backward"></i></li>
+        <li><i class="fa fa-play"></i></li>
+        <li><i class="fa fa-step-forward"></i></li>
+    </div>
     <script src="src/app.js"></script>
   </body>
 </html>
