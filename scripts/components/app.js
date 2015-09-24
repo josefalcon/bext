@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TabList from './tab-list';
 import PlaybackController from './playback-controller';
-import { SET_ACTIVE_TAB } from '../actions';
+import { SET_ACTIVE_TAB, TOGGLE_TRACK, PREV_TRACK, NEXT_TRACK } from '../actions';
 import { getState, subscribe, unsubscribe, dispatch } from '../store';
 
 class App extends Component {
@@ -22,6 +22,18 @@ class App extends Component {
     dispatch({type: SET_ACTIVE_TAB, tabId: tabId});
   }
 
+  toggleTrack() {
+    dispatch({type: TOGGLE_TRACK});
+  }
+
+  previousTrack() {
+    dispatch({type: PREV_TRACK});
+  }
+
+  nextTrack() {
+    dispatch({type: NEXT_TRACK});
+  }
+
   render() {
     return (
       <div className="container">
@@ -29,7 +41,11 @@ class App extends Component {
           tabs={this.state.tabs}
           activeTab={this.state.activeTab}
           setActiveTab={this.setActiveTab.bind(this)} />
-        <PlaybackController isPlaying={this.state.isPlaying} />
+        <PlaybackController
+          isPlaying={this.state.isPlaying}
+          toggleTrack={this.toggleTrack.bind(this)}
+          previousTrack={this.previousTrack.bind(this)}
+          nextTrack={this.nextTrack.bind(this)} />
       </div>
     );
   }

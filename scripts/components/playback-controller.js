@@ -9,9 +9,9 @@ export default class PlaybackController extends Component {
     return (
       <div className="controller">
         <ul>
-          <li><i className="fa fa-step-backward"></i></li>
-          <li>{toggle}</li>
-          <li><i className="fa fa-step-forward"></i></li>
+          <li onClick={this.props.previousTrack}><i className="fa fa-step-backward"></i></li>
+          <li onClick={this.props.toggleTrack}>{toggle}</li>
+          <li onClick={this.props.nextTrack}><i className="fa fa-step-forward"></i></li>
         </ul>
       </div>
     );
