@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TabList from './components/tab-list';
+import PlaybackController from './components/playback-controller';
 import { SET_ACTIVE_TAB } from './actions';
 import { getState, subscribe, unsubscribe, dispatch } from './store';
 
@@ -23,15 +24,18 @@ class App extends Component {
 
   render() {
     return (
-      <TabList
-        tabs={this.state.tabs}
-        activeTab={this.state.activeTab}
-        setActiveTab={this.setActiveTab.bind(this)} />
+      <div class="container">
+        <TabList
+          tabs={this.state.tabs}
+          activeTab={this.state.activeTab}
+          setActiveTab={this.setActiveTab.bind(this)} />
+        <PlaybackController />
+      </div>
     );
   }
 }
 
 React.render(
   <App />,
-  document.querySelector('.container')
+  document.querySelector('body')
 );
