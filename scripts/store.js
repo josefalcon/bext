@@ -3,7 +3,8 @@ const handlers = require('./handlers.json');
 
 const initialState = {
   activeTab: false,
-  tabs: {}
+  tabs: {},
+  isPlaying: false
 }
 
 export function getState() {
@@ -28,6 +29,7 @@ export function initializeTabs() {
     let matchedTabs = tabs.map(matchTab).filter(x => x);
     getState()
       .then(state => {
+        state.isPlaying = matchedTabs.some(t => t.audible);
         matchedTabs.forEach(tab => {
           trackTabTitle(tab.id);
           state.tabs[tab.id] = tab
@@ -57,6 +59,7 @@ function matchTab(tab) {
         id: tab.id,
         url: tab.url,
         title: tab.title,
+        audible: tab.audible, // another way would be to tabs.query for audible...
         handler: key
       };
     }
@@ -120,7 +123,14 @@ function dispatchInTab(action) {
 
       if (handler) {
         let code = handler[action.type];
-        if (code) chrome.tabs.executeScript(activeTab.id, {code: code});
+        if (code) {
+          chrome.tabs.executeScript(activeTab.id, {code: code}, () => {
+            if (action.type === TOGGLE_TRACK) {
+              state.isPlaying = !state.isPlaying;
+              saveState(state);
+            }
+          });
+        }
       }
     });
 };
