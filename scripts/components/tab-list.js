@@ -2,13 +2,10 @@ import React, { Component } from 'react';
 
 class TabItem extends Component {
   render() {
-    let selected = this.props.active
-      ? <i className="fa fa-check"></i>
-      : null;
-
+    let className = this.props.active ? 'active' : '';
     return (
-      <li onClick={this.props.setActiveTab}>
-        {selected} {this.props.title}
+      <li className={className} onClick={this.props.setActiveTab}>
+        {this.props.title}
       </li>
     );
   }

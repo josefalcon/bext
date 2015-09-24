@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <style>
       * {
         box-sizing: border-box;
@@ -11,17 +10,6 @@
         margin: 0;
         padding: 0;
         font-family: avenir, 'avenir next', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      }
-
-      .header {
-        text-align: center;
-        font-weight: 300;
-        font-size: .8rem;
-        background-color: #f1f1f1;
-        color: #000;
-        padding: .25rem;
-        letter-spacing: .15em;
-        text-transform: uppercase;
       }
 
       .container {
@@ -36,27 +24,25 @@
       .tab-list li {
         list-style: none;
         padding: .25rem;
+        border-left: 1px solid #fff;
+        border-right: 1px solid #fff;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+        cursor: pointer;
+      }
+
+      .tab-list li.active {
+        background-color: #eee;
       }
 
       .tab-list li:hover {
-        background-color: #f5f5f5;
-      }
-
-      .tab-list li:not(:last-child) {
-        border-bottom: 1px solid #f1f1f1;
+        border-left: 1px solid #333;
       }
     </style>
   </head>
   <body>
-    <div class="header">
-      Active Tabs
-    </div>
-
     <div class="container"></div>
-
     <script src="src/app.js"></script>
   </body>
 </html>
