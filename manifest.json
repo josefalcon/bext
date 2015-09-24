@@ -8,6 +8,10 @@
     "default_popup": "index.html"
   },
 
+  "icons": {
+    "128": "images/icon128.png"
+  },
+
   "commands": {
     "toggle": {
       "suggested_key": {
