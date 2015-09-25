@@ -30,6 +30,8 @@ export function initializeTabs() {
     getState()
       .then(state => {
         state.isPlaying = matchedTabs.some(t => t.audible);
+        // reset tab state.
+        state.tabs = {};
         matchedTabs.forEach(tab => {
           trackTabTitle(tab.id);
           state.tabs[tab.id] = tab
@@ -113,6 +115,10 @@ function setActiveTab(tabId) {
 
       // attempt to pause all other tabs
       Object.keys(state.tabs).forEach(t => {
+        if (t === state.activeTab) {
+          return;
+        }
+
         let tab = state.tabs[t];
         let handler = handlers[tab.handler];
         if (handler.pause) {
