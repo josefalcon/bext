@@ -6,7 +6,10 @@ chrome.commands.onCommand.addListener(command => {
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.url) dispatch({type: UPDATE_TAB, tab: tab});
+  // Note: 'audible' changes are for Chrome 46
+  if (changeInfo.hasOwnProperty('url') || changeInfo.hasOwnProperty('audible')) {
+    dispatch({type: UPDATE_TAB, tab: tab});
+  }
 });
 
 chrome.tabs.onRemoved.addListener(tabId => {

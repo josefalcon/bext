@@ -82,6 +82,7 @@ function updateTab(tab) {
       .then(state => {
         trackTabTitle(tab.id);
         state.tabs[tab.id] = tabInfo
+        state.isPlaying = Object.keys(state.tabs).some(t => state.tabs[t].audible);
         return saveState(state);
       });
   } else {
