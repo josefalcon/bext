@@ -110,6 +110,15 @@ function setActiveTab(tabId) {
   getState()
     .then(state => {
       state.activeTab = tabId;
+
+      // attempt to pause all other tabs
+      Object.keys(state.tabs).forEach(t => {
+        let tab = state.tabs[t];
+        let handler = handlers[tab.handler];
+        if (handler.pause) {
+          chrome.tabs.executeScript(tab.id, {code: handler.pause});
+        }
+      })
       return saveState(state);
     });
 }
@@ -125,12 +134,7 @@ function dispatchInTab(action) {
       if (handler) {
         let code = handler[action.type];
         if (code) {
-          chrome.tabs.executeScript(activeTab.id, {code: code}, () => {
-            if (action.type === TOGGLE_TRACK) {
-              state.isPlaying = !state.isPlaying;
-              saveState(state);
-            }
-          });
+          chrome.tabs.executeScript(activeTab.id, {code: code});
         }
       }
     });
