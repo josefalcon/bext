@@ -1,5 +1,5 @@
 import { UPDATE_TAB, REMOVE_TAB } from './actions';
-import { dispatch, initializeTabs } from './store';
+import { dispatch, initializeTabs, subscribe } from './store';
 
 chrome.commands.onCommand.addListener(command => {
   dispatch({type: command});
@@ -22,3 +22,28 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 chrome.runtime.onStartup.addListener(initializeTabs);
 chrome.runtime.onInstalled.addListener(initializeTabs);
+
+const GREEN = '#2ECC40';
+const RED = '#FF4136';
+
+// listener for setting various extension attributes.
+subscribe(state => {
+  if (state.activeTab) {
+    let tabTitle = state.tabs[state.activeTab].title;
+    chrome.browserAction.getTitle({}, currentTitle => {
+      if (tabTitle !== currentTitle) {
+        chrome.browserAction.setTitle({title: tabTitle});
+      }
+    });
+  }
+
+  let tabCount = Object.keys(state.tabs).length.toString();
+  chrome.browserAction.getBadgeText({}, badgeText => {
+    if (tabCount !== badgeText) {
+      chrome.browserAction.setBadgeText({text: tabCount});
+    }
+  });
+
+  let color = state.isPlaying ? GREEN : RED;
+  chrome.browserAction.setBadgeBackgroundColor({color: color});
+});
