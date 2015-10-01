@@ -16,6 +16,12 @@ class TabItem extends Component {
 export default class TabList extends Component {
   render() {
     let tabs = Object.keys(this.props.tabs);
+    if (!tabs || tabs.length < 1) {
+      return (
+        <h1>empty state</h1>
+      );
+    }
+
     return (
       <div className="tab-list">
         <ul>

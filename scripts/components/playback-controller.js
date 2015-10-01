@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 export default class PlaybackController extends Component {
   render() {
+    if (!this.props.hasTabs) return null;
+
     let toggle = this.props.isPlaying
       ? <i className="fa fa-pause"></i>
       : <i className="fa fa-play"></i>;

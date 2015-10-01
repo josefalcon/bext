@@ -35,13 +35,16 @@ class App extends Component {
   }
 
   render() {
+    let hasTabs = this.props.tabs && Object.keys(this.props.tabs).length > 0;
     return (
       <div className="container">
         <TabList
           tabs={this.state.tabs}
           activeTab={this.state.activeTab}
           setActiveTab={this.setActiveTab.bind(this)} />
+
         <PlaybackController
+          hasTabs={hasTabs}
           isPlaying={this.state.isPlaying}
           toggleTrack={this.toggleTrack.bind(this)}
           previousTrack={this.previousTrack.bind(this)}
