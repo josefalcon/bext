@@ -18,7 +18,7 @@ export default class TabList extends Component {
     let tabs = Object.keys(this.props.tabs);
     if (!tabs || tabs.length < 1) {
       return (
-        <h1>empty state</h1>
+        <div className="empty-state"><h1>No Applicable Tabs</h1></div>
       );
     }
 
