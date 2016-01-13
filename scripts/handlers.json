@@ -14,6 +14,8 @@
   "bandcamp": {
     "toggle": "(function(){document.querySelector('.playbutton').click()})()",
     "pause": "(function(){document.querySelector('.playbutton.playing').click()})()",
+    "next": "(function(){document.querySelector('.nextbutton').click()})()",
+    "previous": "(function(){document.querySelector('.prevbutton').click()})()",
     "match": "*://*.bandcamp.com/*"
   },
   "youtube": {
