@@ -1,4 +1,5 @@
 import { UPDATE_TAB, REMOVE_TAB, TOGGLE_TRACK, PREV_TRACK, NEXT_TRACK, SET_ACTIVE_TAB } from './actions';
+import matchPatterns from 'match-patterns';
 const handlers = require('./handlers.json');
 
 const initialState = {
@@ -56,7 +57,8 @@ function saveState(state) {
 
 function matchTab(tab) {
   for (var key of Object.keys(handlers)) {
-    if (tab.url.indexOf(handlers[key].urlToMatch) > -1) {
+    let pattern = matchPatterns.parse(handlers[key].match);
+    if (pattern.test(tab.url)) {
       return {
         id: tab.id,
         url: tab.url,

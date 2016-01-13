@@ -4,18 +4,23 @@
     "pause": "(function(){var e=document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#play-pause')[0];if(e.classList.contains('playing')){e.click()}})()",
     "next": "(function(){document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#next')[0].click()})()",
     "previous": "(function(){document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#previous')[0].click()})()",
-    "urlToMatch": "spotify.com"
+    "match": "*://play.spotify.com/*"
+  },
+  "bandcampWeekly": {
+    "toggle": "(function(){document.querySelector('#bcweekly .play-btn').click()})()",
+    "pause": "(function(){var bcw=document.getElementById('bcweekly-inner');if(bcw.classList.contains('playing')){document.querySelector('#bcweekly .play-btn').click()}})()",
+    "match": "*://bandcamp.com/*"
   },
   "bandcamp": {
-    "toggle": "(function(){document.querySelector('#bcweekly .play-btn').click()})()",
-    "pause": "(function(){var bcw=document.getElementById('bcweekly');if(bcw.classList.contains('playing')){document.querySelector('#bcweekly .play-btn').click()}})()",
-    "urlToMatch": "bandcamp.com"
+    "toggle": "(function(){document.querySelector('.playbutton').click()})()",
+    "pause": "(function(){document.querySelector('.playbutton.playing').click()})()",
+    "match": "*://*.bandcamp.com/*"
   },
   "youtube": {
     "toggle": "(function(){document.querySelector('.ytp-play-button').click()})()",
     "pause": "(function(){var p = document.querySelector('.ytp-play-button'); if(p.getAttribute('aria-label') === 'Pause') p.click()})()",
     "next": "(function(){document.querySelector('.ytp-next-button').click()})()",
     "previous": "(function(){document.querySelector('.ytp-prev-button').click()})()",
-    "urlToMatch": "youtube.com/watch"
+    "match": "*://www.youtube.com/watch*"
   }
 }
