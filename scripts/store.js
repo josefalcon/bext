@@ -1,5 +1,5 @@
 import { UPDATE_TAB, REMOVE_TAB, TOGGLE_TRACK, PREV_TRACK, NEXT_TRACK, SET_ACTIVE_TAB } from './actions';
-import matchPatterns from 'match-patterns';
+import matchPatterns from 'match-pattern';
 const handlers = require('./handlers.json');
 
 const initialState = {
