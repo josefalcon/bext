@@ -24,5 +24,12 @@
     "next": "(function(){document.querySelector('.ytp-next-button').click()})()",
     "previous": "(function(){document.querySelector('.ytp-prev-button').click()})()",
     "match": "*://www.youtube.com/watch*"
+  },
+  "soundcloud": {
+    "toggle": "(function(){return document.querySelectorAll('.playControl')[0].click()})()",
+    "pause": "(function (){return document.querySelector('div.playControls button.playbackSoundBadge__like').click()})()",
+    "next": "(function(){return document.querySelectorAll('.skipControl__next')[0].click()})()",
+    "previous": "(function(){return document.querySelectorAll('.skipControl__previous')[0].click()})()",
+    "match": "*://*.soundcloud.com/*"
   }
 }

@@ -1,162 +1,80 @@
-import { UPDATE_TAB, REMOVE_TAB, TOGGLE_TRACK, PREV_TRACK, NEXT_TRACK, SET_ACTIVE_TAB } from './actions';
-import matchPatterns from 'match-pattern';
+const matchPattern = require('match-pattern');
 const handlers = require('./handlers.json');
+const d = require('debug')('store');
+require('./local-promise')
 
-const initialState = {
-  activeTab: false,
-  tabs: {},
-  isPlaying: false
-}
+class Store {
+  constructor(state) {
+    this.state = state;
+  }
 
-export function getState() {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get('state', items => {
-      if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-      else resolve(items.state || initialState);
-    });
-  });
-}
+  handlerForTab(tab) {
+    for (var key of Object.keys(handlers)) {
+      let pattern = matchPattern.parse(handlers[key].match);
+      if (pattern.test(tab.url)) {
+        return {
+          id: tab.id,
+          handler: key
+        };
+      }
+    }
+    return false;
+  }
 
-export function subscribe(listener) {
-  // we can't use a traditional EventEmitter in this case.
-  // there is no persisted runtime environment.
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message && message.updateState) listener(message.updateState);
-  });
-}
-
-export function initializeTabs() {
-  chrome.tabs.query({}, tabs => {
-    let matchedTabs = tabs.map(matchTab).filter(x => x);
-    getState()
-      .then(state => {
-        state.isPlaying = matchedTabs.some(t => t.audible);
-        // reset tab state.
-        state.tabs = {};
-        matchedTabs.forEach(tab => {
-          trackTabTitle(tab.id);
-          state.tabs[tab.id] = tab
+  setControlledTab(tab) {
+    // this is the tab being controlled
+    let tabInfo = this.handlerForTab(tab);
+    if (tabInfo) {
+      d('Setting controlledTab=%o', tabInfo)
+      chrome.storage.local.promise.set({controlledTab: tabInfo})
+        .then(() => {
+          this.state.controlledTab = tabInfo;
         });
-        saveState(state);
-      })
-  });
-}
-
-function saveState(state) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.set({state: state}, () => {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
-      } else {
-        chrome.runtime.sendMessage({'updateState': state});
-        resolve();
+    } else {
+      d('Uncontrollable tab.url=%s', tab.url);
+      if (this.state.controlledTab && tab.id === this.state.controlledTab.id) {
+        chrome.storage.local.promise.remove('controlledTab')
+          .then(() => {
+            this.state.controlledTab = null;
+          });
       }
-    });
-  });
-}
-
-function matchTab(tab) {
-  for (var key of Object.keys(handlers)) {
-    let pattern = matchPatterns.parse(handlers[key].match);
-    if (pattern.test(tab.url)) {
-      return {
-        id: tab.id,
-        url: tab.url,
-        title: tab.title,
-        audible: tab.audible, // another way would be to tabs.query for audible...
-        handler: key
-      };
     }
   }
-  return false;
-}
 
-function trackTabTitle(tabId) {
-  chrome.tabs.sendMessage(tabId, {}, response => {
-    if (response !== 'alive') {
-      chrome.tabs.executeScript(tabId, {file: 'src/title-observer.js'});
+  updateTab(tab) {
+    if (this.state.controlledTab && tab.id === this.state.controlledTab.id) {
+      this.setControlledTab(tab);
     }
-  });
-}
+  }
 
-function updateTab(tab) {
-  let tabInfo = matchTab(tab);
-  if (tabInfo) {
-    getState()
-      .then(state => {
-        trackTabTitle(tab.id);
-        state.tabs[tab.id] = tabInfo
-        state.isPlaying = Object.keys(state.tabs).some(t => state.tabs[t].audible);
-        return saveState(state);
-      });
-  } else {
-    // remove it since it doesn't match.
-    // this is a noop if we don't already track this tab.
-    removeTab(tab.id);
+  removeTab(tabId) {
+    if (this.state.controlledTab && tabId === this.state.controlledTab.id) {
+      chrome.storage.local.promise.remove('controlledTab')
+        .then(() => {
+          this.state.controlledTab = null;
+        });
+    }
+  }
+
+  dispatchInTab(action, tab) {
+    tab = tab || this.state.controlledTab;
+    if (!tab || !action) {
+      d('Ignoring dispatch action=%o tab=%o', action, tab);
+      return;
+    }
+
+    let handler = handlers[tab.handler];
+    if (handler) {
+      let code = handler[action.type];
+      if (code) {
+        chrome.tabs.executeScript(tab.id, {code: code});
+      }
+    }
+  }
+
+  static create() {
+    return chrome.storage.local.promise.get().then(state => new Store(state));
   }
 }
 
-function removeTab(tabId) {
-  getState()
-    .then(state => {
-      if (state.tabs[tabId]) {
-        delete state.tabs[tabId];
-
-        if (state.activeTab === tabId) {
-          state.activeTab = null;
-        }
-        return saveState(state);
-      }
-    });
-}
-
-function setActiveTab(tabId) {
-  getState()
-    .then(state => {
-      state.activeTab = tabId;
-
-      // attempt to pause all other tabs
-      Object.keys(state.tabs).forEach(t => {
-        if (t === state.activeTab) {
-          return;
-        }
-
-        let tab = state.tabs[t];
-        let handler = handlers[tab.handler];
-        if (handler.pause) {
-          chrome.tabs.executeScript(tab.id, {code: handler.pause});
-        }
-      })
-      return saveState(state);
-    });
-}
-
-function dispatchInTab(action) {
-  getState()
-    .then(state => {
-      if (!state.activeTab) return;
-
-      let activeTab = state.tabs[state.activeTab];
-      let handler = handlers[activeTab.handler];
-
-      if (handler) {
-        let code = handler[action.type];
-        if (code) {
-          chrome.tabs.executeScript(activeTab.id, {code: code});
-        }
-      }
-    });
-};
-
-export function dispatch(action) {
-  switch(action.type) {
-    case UPDATE_TAB: updateTab(action.tab); break;
-    case REMOVE_TAB: removeTab(action.tabId); break;
-    case SET_ACTIVE_TAB: setActiveTab(action.tabId); break;
-    case TOGGLE_TRACK:
-    case PREV_TRACK:
-    case NEXT_TRACK:
-      dispatchInTab(action); break;
-    default: console.log('unknown action'); break;
-  }
-}
+module.exports = Store;
