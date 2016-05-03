@@ -34,9 +34,9 @@ Store.create().then(store => {
     store.removeTab(tabId);
   });
 
-  chrome.browserAction.onClicked.addListener(tab => {
-    d('browserAction clicked tab=%o', tab);
-    store.setControlledTab(tab);
+  chrome.pageAction.onClicked.addListener(tab => {
+    d('pageAction clicked tab=%o', tab);
+    store.updateControlledTab(tab);
   });
 
 });

@@ -4,9 +4,7 @@
   "name": "bext",
   "description": "Control web-based media apps with your media keys.",
   "version": "1.0",
-  "browser_action": {
-
-  },
+  "page_action": {},
 
   "icons": {
     "128": "images/icon128.png"

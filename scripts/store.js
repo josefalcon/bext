@@ -21,18 +21,19 @@ class Store {
     return false;
   }
 
-  setControlledTab(tab) {
-    // this is the tab being controlled
+  updateControlledTab(tab) {
     let tabInfo = this.handlerForTab(tab);
     if (tabInfo) {
       d('Setting controlledTab=%o', tabInfo)
+      chrome.pageAction.show(tab.id);
       chrome.storage.local.promise.set({controlledTab: tabInfo})
         .then(() => {
           this.state.controlledTab = tabInfo;
         });
     } else {
       d('Uncontrollable tab.url=%s', tab.url);
-      if (this.state.controlledTab && tab.id === this.state.controlledTab.id) {
+      chrome.pageAction.hide(tab.id);
+      if (this.isControlledTab(tab.id)) {
         chrome.storage.local.promise.remove('controlledTab')
           .then(() => {
             this.state.controlledTab = null;
@@ -41,14 +42,25 @@ class Store {
     }
   }
 
+  isControlledTab(tabId) {
+    return this.state.controlledTab && tabId === this.state.controlledTab.id;
+  }
+
   updateTab(tab) {
-    if (this.state.controlledTab && tab.id === this.state.controlledTab.id) {
-      this.setControlledTab(tab);
+    if (this.isControlledTab(tab.id)) {
+      return this.updateControlledTab(tab);
+    }
+
+    let tabInfo = this.handlerForTab(tab);
+    if (tabInfo) {
+      chrome.pageAction.show(tab.id);
+    } else {
+      chrome.pageAction.hide(tab.id);
     }
   }
 
   removeTab(tabId) {
-    if (this.state.controlledTab && tabId === this.state.controlledTab.id) {
+    if (this.isControlledTab(tabId)) {
       chrome.storage.local.promise.remove('controlledTab')
         .then(() => {
           this.state.controlledTab = null;
