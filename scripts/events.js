@@ -9,11 +9,10 @@ const d = debug('events');
 
 d('Waking up event page...');
 
-// not exactly clear why, but this avoids dropping events when the event
-// page is woken up from the inactive state. it does nothing, but seems
-// to permit the listener below fire...¯\_(ツ)_/¯
 chrome.commands.onCommand.addListener(command => {
-  d('This handler makes the other handler work ¯\\_(ツ)_/¯');
+  // not exactly clear why, but this avoids dropping events when the event
+  // page is woken up from the inactive state because of a key command.
+  // it does nothing, but seems to permit the listener below fire...¯\_(ツ)_/¯
 });
 
 Store.create().then(store => {
@@ -45,5 +44,6 @@ Store.create().then(store => {
 // expose a function for enabling debug logs.
 chrome.debug = {
   enable: (k) => debug.enable(k || '*'),
-  disable: () => debug.disable()
+  disable: () => debug.disable(),
+  dumpLocalStorage: () => chrome.storage.local.promise.get().then(s => d('localStorage=%o', s))
 }
