@@ -1,35 +1,41 @@
 {
   "spotify": {
-    "toggle": "(function(){document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#play-pause')[0].click()})()",
+    "toggle": "document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#play-pause')[0].click()",
     "pause": "(function(){var e=document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#play-pause')[0];if(e.classList.contains('playing')){e.click()}})()",
-    "next": "(function(){document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#next')[0].click()})()",
-    "previous": "(function(){document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#previous')[0].click()})()",
+    "next": "document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#next')[0].click()",
+    "previous": "document.querySelectorAll('#app-player')[0].contentWindow.document.querySelectorAll('#previous')[0].click()",
     "match": "*://play.spotify.com/*"
   },
   "bandcampWeekly": {
-    "toggle": "(function(){document.querySelector('#bcweekly .play-btn').click()})()",
+    "toggle": "document.querySelector('#bcweekly .play-btn').click()",
     "pause": "(function(){var bcw=document.getElementById('bcweekly-inner');if(bcw.classList.contains('playing')){document.querySelector('#bcweekly .play-btn').click()}})()",
+    "next": "document.querySelector('.bcweekly-current').nextElementSibling.click()",
+    "previous": "document.querySelector('.bcweekly-current').previousElementSibling.click()",
     "match": "*://bandcamp.com/*"
   },
   "bandcamp": {
-    "toggle": "(function(){document.querySelector('.playbutton').click()})()",
-    "pause": "(function(){document.querySelector('.playbutton.playing').click()})()",
-    "next": "(function(){document.querySelector('.nextbutton').click()})()",
-    "previous": "(function(){document.querySelector('.prevbutton').click()})()",
+    "toggle": "document.querySelector('.playbutton').click()",
+    "pause": "document.querySelector('.playbutton.playing').click()",
+    "next": "document.querySelector('.nextbutton').click()",
+    "previous": "document.querySelector('.prevbutton').click()",
     "match": "*://*.bandcamp.com/*"
   },
   "youtube": {
-    "toggle": "(function(){document.querySelector('.ytp-play-button').click()})()",
+    "toggle": "document.querySelector('.ytp-play-button').click()",
     "pause": "(function(){var p = document.querySelector('.ytp-play-button'); if(p.getAttribute('aria-label') === 'Pause') p.click()})()",
-    "next": "(function(){document.querySelector('.ytp-next-button').click()})()",
-    "previous": "(function(){document.querySelector('.ytp-prev-button').click()})()",
+    "next": "document.querySelector('.ytp-next-button').click()",
+    "previous": "document.querySelector('.ytp-prev-button').click()",
     "match": "*://www.youtube.com/watch*"
   },
   "soundcloud": {
-    "toggle": "(function(){return document.querySelectorAll('.playControl')[0].click()})()",
-    "pause": "(function (){return document.querySelector('div.playControls button.playbackSoundBadge__like').click()})()",
-    "next": "(function(){return document.querySelectorAll('.skipControl__next')[0].click()})()",
-    "previous": "(function(){return document.querySelectorAll('.skipControl__previous')[0].click()})()",
+    "toggle": "document.querySelectorAll('.playControl')[0].click()",
+    "pause": "document.querySelector('div.playControls button.playbackSoundBadge__like').click()",
+    "next": "document.querySelectorAll('.skipControl__next')[0].click()",
+    "previous": "document.querySelectorAll('.skipControl__previous')[0].click()",
     "match": "*://*.soundcloud.com/*"
+  },
+  "twitch": {
+    "toggle": "document.querySelector('.player-button').click()",
+    "match": "*://*.twitch.tv/*"
   }
 }
