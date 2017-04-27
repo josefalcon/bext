@@ -37,5 +37,12 @@
   "twitch": {
     "toggle": "document.querySelector('.player-button').click()",
     "match": "*://*.twitch.tv/*"
+  },
+  "musicforprogramming": {
+    "toggle": "document.querySelector('#player_playpause').click()",
+    "pause": "(function() { var a = document.querySelector('#player_playpause'); if (a.innerText.indexOf('PAUSE') !== -1) {a.click()} })()",
+    "next": "document.querySelector('#player_ffw').click()",
+    "previous": "document.querySelector('#player_rew').click()",
+    "match": "*://*.musicforprogramming.net/*"
   }
 }
